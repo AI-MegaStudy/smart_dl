@@ -1,0 +1,23 @@
+# Local editor settings
+.vscode/
+
+# Python cache files
+__pycache__/
+**/__pycache__/
+*.py[cod]
+
+# Jupyter local metadata
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# External/source sample data
+/Data/Sample/
+/Docs/
+/Example/
+
+# Generated training data and model artifacts
+/ai/dl/freshness/data/
+/ai/dl/freshness/models/
+*.pt
+*.pth
+*.ckpt
