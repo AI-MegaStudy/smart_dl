@@ -16,8 +16,11 @@ __pycache__/
 /Example/
 
 # Generated training data and model artifacts
-/ai/dl/freshness/data/
-/ai/dl/freshness/models/
+/models/
+/*-freshness-data/
+/extracted-data/
+/src/freshness/data/
+/src/freshness/models/
 *.pt
 *.pth
 *.ckpt

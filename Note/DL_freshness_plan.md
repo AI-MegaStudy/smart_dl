@@ -142,7 +142,7 @@ MVP 자체 촬영 또는 QC 데이터 활용 기준:
 권장 폴더:
 
 ```text
-ai/dl/freshness/
+src/freshness/
   dataset.py
   train.py
   infer.py
@@ -295,10 +295,10 @@ Day 13-14:
 
 반드시 있어야 하는 것:
 
-- `ai/dl/freshness/dataset.py`
-- `ai/dl/freshness/train.py`
-- `ai/dl/freshness/infer.py`
-- `ai/dl/freshness/opencv_features.py`
+- `src/freshness/dataset.py`
+- `src/freshness/train.py`
+- `src/freshness/infer.py`
+- `src/freshness/opencv_features.py`
 - 학습 또는 데모용 모델 파일
 - 테스트 이미지 세트
 - `/api/v1/dl/freshness-scan` API
