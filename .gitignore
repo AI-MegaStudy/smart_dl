@@ -12,15 +12,17 @@ __pycache__/
 
 # External/source sample data
 /Data/Sample/
+/Data/images/
 /Docs/
 /Example/
 
 # Generated training data and model artifacts
-/models/
+# /models/
+/models/archive/
 /*-freshness-data/
 /extracted-data/
 /src/freshness/data/
 /src/freshness/models/
-*.pt
+# *.pt
 *.pth
 *.ckpt
