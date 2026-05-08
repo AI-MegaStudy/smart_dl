@@ -2,10 +2,10 @@
 
 ## 1. 현재 사용하는 모델
 
-현재 최종 후보 모델 세트는 아래 폴더에 있습니다.
+현재 최종 모델 세트는 아래 폴더에 있습니다.
 
 ```text
-models/apple_view_balanced/
+models/apple_balanced/
 ```
 
 필요한 파일:
@@ -25,6 +25,15 @@ apple_side_grade_resnet18_best.pt
 | `apple_top_grade_resnet18_best.pt` | top 이미지의 A/B/C 등급 예측 |
 | `apple_middle_grade_resnet18_best.pt` | middle 이미지의 A/B/C 등급 예측 |
 | `apple_side_grade_resnet18_best.pt` | side 이미지의 A/B/C 등급 예측 |
+
+현재 모델은 `train/valid/test` 모두 균형 subset을 사용한 `apple_balanced` 기준입니다.
+
+| 모델 | balanced test accuracy | balanced test macro_f1 |
+|---|---:|---:|
+| view | 0.9177 | 0.9162 |
+| top grade | 0.8605 | 0.8612 |
+| middle grade | 0.9074 | 0.9065 |
+| side grade | 0.9136 | 0.9136 |
 
 ## 2. 서비스 추론 흐름
 
@@ -99,7 +108,7 @@ Content-Type: multipart/form-data
     "model_decision": "REVIEW",
     "action_required": "OWNER_REVIEW",
     "retake_reason": null,
-    "model_version": "apple-single-image-top-middle-side-view-balanced-router-v0",
+    "model_version": "apple-single-image-top-middle-side-balanced-split-router-v1",
     "image_quality": {
       "brightness": 0.61,
       "underexposed_ratio": 0.02,
@@ -134,7 +143,7 @@ Content-Type: multipart/form-data
     "model_decision": "HOLD",
     "action_required": "OWNER_REVIEW",
     "retake_reason": null,
-    "model_version": "apple-single-image-top-middle-side-view-balanced-router-v0",
+    "model_version": "apple-single-image-top-middle-side-balanced-split-router-v1",
     "image_quality": {
       "brightness": 0.8302,
       "underexposed_ratio": 0.0004,

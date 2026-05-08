@@ -2,7 +2,7 @@
 
 현재 기준으로 사용하는 핵심 노트는 아래 두 개입니다.
 
-- `DL_apple_view_balanced_training.ipynb`
+- `DL_apple_balanced_training.ipynb`
   - 사과 단일 이미지 학습 노트입니다.
   - 입력 이미지 1장을 `top/middle/side` 중 하나로 먼저 분류합니다.
   - 분류된 view에 따라 `top_grade`, `middle_grade`, `side_grade` 모델 중 하나를 사용해 A/B/C 등급을 예측합니다.
@@ -15,7 +15,7 @@
 현재 기준 모델 폴더는 아래입니다.
 
 ```text
-models/apple_view_balanced/
+models/apple_balanced/
 ```
 
 이전 실험 노트는 삭제하지 않고 아래에 보관했습니다.
