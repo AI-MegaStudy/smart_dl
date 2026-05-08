@@ -53,7 +53,7 @@ front90, diagonal90 -> side
 현재 학습 노트:
 
 ```text
-Note/DL_apple_view_balanced_training.ipynb
+Note/DL_apple_balanced_training.ipynb
 ```
 
 주요 특징:
@@ -63,8 +63,19 @@ Note/DL_apple_view_balanced_training.ipynb
 - group 기준으로 `train_valid:test = 7:3` 분리합니다.
 - train_valid 내부에서 `train:valid = 8:2`로 다시 분리합니다.
 - 같은 사과의 여러 각도 이미지는 train/valid/test에 나뉘지 않도록 합니다.
-- view 모델 train 데이터만 `top/middle/side` 균형 샘플로 구성합니다.
-- grade 모델은 view별 전체 train 데이터를 사용하고, `grade_label x variety` 기준 sampler로 불균형을 완화합니다.
+- train/valid/test 모두 모델별 균형 subset을 사용합니다.
+- view 모델은 `angle_label x grade_label x variety` 조합을 split별 최소 개수에 맞춥니다.
+- grade 모델은 `grade_label x variety` 조합을 split별 최소 개수에 맞춥니다.
+- 부족한 데이터를 증강하지 않고, 많은 쪽을 줄이는 downsampling 방식입니다.
+
+현재 `models/apple_balanced/report.md` 기준 balanced test 결과:
+
+| 모델 | balanced test 기준 | accuracy | macro_f1 |
+|---|---|---:|---:|
+| view | top/middle/side x A/B/C x 품종 | 0.9177 | 0.9162 |
+| top grade | A/B/C x 품종 | 0.8605 | 0.8612 |
+| middle grade | A/B/C x 품종 | 0.9074 | 0.9065 |
+| side grade | A/B/C x 품종 | 0.9136 | 0.9136 |
 
 ## 4. 추론 정책
 
@@ -106,7 +117,7 @@ API 응답은 다음 공통 형태를 사용합니다.
     "model_decision": "HOLD",
     "action_required": "OWNER_REVIEW",
     "retake_reason": null,
-    "model_version": "apple-single-image-top-middle-side-view-balanced-router-v0",
+    "model_version": "apple-single-image-top-middle-side-balanced-split-router-v1",
     "image_quality": {
       "brightness": 0.8302,
       "underexposed_ratio": 0.0004,
