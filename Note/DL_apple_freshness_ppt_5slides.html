@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>사과 DL 신선도 판별 프로세스 5장 요약</title>
+  <style>
+    :root {
+      --ink: #17202a;
+      --muted: #637083;
+      --line: #d8dee6;
+      --paper: #fbfcfe;
+      --panel: #ffffff;
+      --accent: #2f7d59;
+      --accent2: #b34738;
+      --soft: #eef6f1;
+      --visual: #f7f9fb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #e6ebf0;
+      color: var(--ink);
+      font-family: "Malgun Gothic", "맑은 고딕", "Noto Sans KR", Arial, sans-serif;
+    }
+    .deck {
+      display: grid;
+      gap: 28px;
+      padding: 28px;
+    }
+    .slide {
+      width: min(1280px, calc(100vw - 56px));
+      aspect-ratio: 16 / 9;
+      margin: 0 auto;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: 0 18px 42px rgba(23, 32, 42, 0.16);
+      padding: 42px 48px 34px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      overflow: hidden;
+    }
+    .title {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      align-items: end;
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 14px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 34px;
+      line-height: 1.18;
+      letter-spacing: 0;
+    }
+    .label {
+      color: var(--accent);
+      font-size: 15px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .content {
+      padding-top: 24px;
+      display: grid;
+      grid-template-columns: 0.92fr 1.18fr;
+      gap: 22px;
+      min-height: 0;
+    }
+    .text-panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px 22px;
+      display: grid;
+      align-content: start;
+      gap: 14px;
+    }
+    .text-panel h2,
+    .visual-panel h2 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.25;
+      color: var(--accent);
+      letter-spacing: 0;
+    }
+    ul {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 17px;
+      line-height: 1.58;
+    }
+    li + li { margin-top: 8px; }
+    .visual-panel {
+      border: 2px dashed #9eb2c3;
+      border-radius: 8px;
+      background: var(--visual);
+      padding: 22px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-height: 0;
+    }
+    .visual-box {
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--muted);
+      font-size: 22px;
+      line-height: 1.45;
+      font-weight: 800;
+      min-height: 0;
+      padding: 20px;
+    }
+    .visual-list {
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 16px;
+    }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 8px;
+      text-align: left;
+    }
+    th {
+      background: #f2f5f8;
+      font-weight: 800;
+    }
+    .num { text-align: right; }
+    .formula {
+      background: #17202a;
+      color: #f7fbff;
+      border-radius: 8px;
+      padding: 14px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 14px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      color: var(--muted);
+      font-size: 13px;
+      border-top: 1px solid var(--line);
+      padding-top: 10px;
+      margin-top: 12px;
+    }
+    @media print {
+      body { background: #fff; }
+      .deck { padding: 0; gap: 0; }
+      .slide {
+        width: 100vw;
+        height: 100vh;
+        border: 0;
+        box-shadow: none;
+        page-break-after: always;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="deck">
+    <section class="slide">
+      <header class="title">
+        <h1>1. 데이터와 문제 정의</h1>
+        <div class="label">사과 품질 이미지 데이터</div>
+      </header>
+      <div class="content">
+        <div class="text-panel">
+          <h2>핵심 설명</h2>
+          <ul>
+            <li>AI-Hub 계열 농산물 품질 이미지 데이터를 사용했다.</li>
+            <li>Kaggle에는 사과 데이터만 연결했고, 현재 모델도 사과 전용이다.</li>
+            <li>원본은 Training/Validation, 원천 이미지/라벨링 JSON으로 구성된다.</li>
+            <li>JSON에서 품종, 등급, 촬영 view, 같은 사과 개체 정보를 추출했다.</li>
+          </ul>
+        </div>
+        <div class="visual-panel">
+          <h2>시각화 자료 자리</h2>
+          <div class="visual-box">데이터 폴더 구조 + JSON 라벨 구조<br>크게 배치</div>
+          <div class="visual-list">권장 자료: 01_data_folder_structure.png, 02_json_label_mapping.png</div>
+        </div>
+      </div>
+      <footer class="footer"><span>출처와 데이터 구조를 먼저 보여주는 장</span><span>1 / 5</span></footer>
+    </section>
+
+    <section class="slide">
+      <header class="title">
+        <h1>2. 데이터 분리와 카테고리화</h1>
+        <div class="label">group split + balanced subset</div>
+      </header>
+      <div class="content">
+        <div class="text-panel">
+          <h2>핵심 설명</h2>
+          <ul>
+            <li>등급은 A/B/C로 통일했다.</li>
+            <li>세부 각도 5개를 top/middle/side 3개 view로 재분류했다.</li>
+            <li>같은 사과가 train/test에 동시에 들어가지 않도록 group_id 기준으로 나눴다.</li>
+            <li>Training + Validation을 합친 뒤 7:3, 다시 8:2로 분리했다.</li>
+          </ul>
+        </div>
+        <div class="visual-panel">
+          <h2>시각화 자료 자리</h2>
+          <div class="visual-box">라벨 매핑 + group split 방식 +<br>view 불균형 보정 전/후 그래프</div>
+          <div class="visual-list">권장 자료: 03_label_mappings.png, 04_group_split_vs_random_split.png, 05_view_distribution_and_balancing.png</div>
+        </div>
+      </div>
+      <footer class="footer"><span>데이터 누수 방지와 불균형 처리 방식을 보여주는 장</span><span>2 / 5</span></footer>
+    </section>
+
+    <section class="slide">
+      <header class="title">
+        <h1>3. 모델 구조와 학습 방식</h1>
+        <div class="label">ResNet18 전이학습</div>
+      </header>
+      <div class="content">
+        <div class="text-panel">
+          <h2>핵심 설명</h2>
+          <ul>
+            <li>PyTorch ResNet18에 ImageNet pretrained weight를 사용했다.</li>
+            <li>마지막 fc layer만 class 수에 맞게 교체했다.</li>
+            <li>view 모델 1개가 top/middle/side를 먼저 판단한다.</li>
+            <li>이후 view별 grade 모델 3개 중 하나가 A/B/C를 예측한다.</li>
+          </ul>
+          <table>
+            <tr><th>설정</th><th>값</th></tr>
+            <tr><td>image</td><td>224</td></tr>
+            <tr><td>batch</td><td>64</td></tr>
+            <tr><td>epoch</td><td>10</td></tr>
+            <tr><td>lr</td><td>3e-4</td></tr>
+          </table>
+        </div>
+        <div class="visual-panel">
+          <h2>시각화 자료 자리</h2>
+          <div class="visual-box">ResNet18 구조 다이어그램 +<br>view 라우팅 흐름도</div>
+          <div class="visual-list">권장 자료: ResNet18 구조 그림, 06_final_model_routing.png</div>
+        </div>
+      </div>
+      <footer class="footer"><span>모델 구조는 그림 중심, parameter는 작게 표시</span><span>3 / 5</span></footer>
+    </section>
+
+    <section class="slide">
+      <header class="title">
+        <h1>4. 성능 비교와 최종 모델 선정</h1>
+        <div class="label">최종 models/apple_balanced</div>
+      </header>
+      <div class="content">
+        <div class="text-panel">
+          <h2>핵심 설명</h2>
+          <ul>
+            <li>random split은 점수가 높지만 같은 사과 누수 가능성 때문에 제외했다.</li>
+            <li>5개 각도 모델은 불균형과 앱 사용성 문제로 제외했다.</li>
+            <li>최종은 top/middle/side view 모델과 view별 grade 모델 3개이다.</li>
+          </ul>
+          <table>
+            <tr><th>모델</th><th class="num">Acc</th><th class="num">F1</th></tr>
+            <tr><td>view</td><td class="num">0.9177</td><td class="num">0.9162</td></tr>
+            <tr><td>top</td><td class="num">0.8605</td><td class="num">0.8612</td></tr>
+            <tr><td>middle</td><td class="num">0.9074</td><td class="num">0.9065</td></tr>
+            <tr><td>side</td><td class="num">0.9136</td><td class="num">0.9136</td></tr>
+          </table>
+        </div>
+        <div class="visual-panel">
+          <h2>시각화 자료 자리</h2>
+          <div class="visual-box">실험별 성능 비교 그래프 +<br>최종 confusion matrix</div>
+          <div class="visual-list">권장 자료: 07_experiment_performance_comparison.png, 08_final_model_metrics.png, 09_final_confusion_matrices.png</div>
+        </div>
+      </div>
+      <footer class="footer"><span>최종 모델 선정 이유를 성능 그래프로 보여주는 장</span><span>4 / 5</span></footer>
+    </section>
+
+    <section class="slide">
+      <header class="title">
+        <h1>5. 신선도 지표와 앱 적용</h1>
+        <div class="label">API 응답과 화면 분기</div>
+      </header>
+      <div class="content">
+        <div class="text-panel">
+          <h2>핵심 설명</h2>
+          <ul>
+            <li>API는 이미지 1장을 받아 view, grade, confidence, 보조 점수를 반환한다.</li>
+            <li>앱은 action_required로 RETAKE, OWNER_REVIEW, NONE을 분기한다.</li>
+            <li>view confidence 기준은 0.60, grade confidence 기준은 0.55이다.</li>
+          </ul>
+          <div class="formula">freshness_score =
+grade_score * 0.60
++ color_score * 0.20
++ roundness_score * 0.10
++ (1 - bruise_probability) * 100 * 0.10</div>
+        </div>
+        <div class="visual-panel">
+          <h2>시각화 자료 자리</h2>
+          <div class="visual-box">신선도 계산/판정 흐름도 +<br>앱 API 응답 분기 화면</div>
+          <div class="visual-list">권장 자료: 12_freshness_decision_flow.png, 13_api_app_branching.png, API 응답 예시 JSON 캡처</div>
+        </div>
+      </div>
+      <footer class="footer"><span>앱 개발자가 실제로 사용할 값을 보여주는 장</span><span>5 / 5</span></footer>
+    </section>
+  </main>
+</body>
+</html>
+
